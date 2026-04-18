@@ -1,62 +1,42 @@
-[中文電子書 -- 從 RISC-V 處理器到 UNIX 作業系統](https://github.com/riscv2os/riscv2os/wiki) / [中文版說明文件](doc/tw)
-
 # mini-riscv-os
 
-Build a minimal multi-tasking OS kernel for RISC-V from scratch
+A minimal multi-tasking OS kernel for RISC-V from scratch, 9 sequential stages from basic boot to 64-bit multicore.
 
-Mini-riscv-os was inspired by [jserv](https://github.com/jserv)'s [mini-arm-os](https://github.com/jserv/mini-arm-os) project.
+Inspired by [jserv](https://github.com/jserv)'s [mini-arm-os](https://github.com/jserv/mini-arm-os).
 
-However, [ccckmit](https://github.com/ccckmit) rewrite the project for RISC-V, and run on Win10 instead of Linux.
+## Stages
 
-## Build & Run on Windows 10
+| # | Directory | Description |
+|---|-----------|-------------|
+| 01 | [01-HelloOs](01-HelloOs) | UART output, stack setup |
+| 02 | [02-ContextSwitch](02-ContextSwitch) | Manual context switch in assembly |
+| 03 | [03-MultiTasking](03-MultiTasking) | Cooperative multi-tasking |
+| 04 | [04-TimerInterrupt](04-TimerInterrupt) | Timer interrupt, CLINT, CSR |
+| 05 | [05-Preemptive](05-Preemptive) | Preemptive scheduling, time slicing |
+| 06 | [06-Mutex](06-Mutex) | Mutex, spinlock, critical sections |
+| 07 | [07-Multicore32bit](07-Multicore32bit) | 32-bit SMP, multi-core |
+| 08 | [08-Multicore64bit](08-Multicore64bit) | 64-bit RISC-V, LP64 ABI |
+| 09 | [09-InterruptISR](09-InterruptISR) | ISR framework, dynamic registration |
 
-- [git-bash](https://git-scm.com/download/win)
-- [FreedomStudio](https://www.sifive.com/software)
+## Build & Run
 
-After download and extract the FreedomStudio for windows. You have to set the system PATH to the folder of `riscv64-unknown-elf-gcc/bin` and `riscv-qemu/bin`. For example, I set PATH to the following folders.
-
-```
-D:\install\FreedomStudio-2020-06-3-win64\SiFive\riscv64-unknown-elf-gcc-8.3.0-2020.04.1\bin
-
-D:\install\FreedomStudio-2020-06-3-win64\SiFive\riscv-qemu-4.2.0-2020.04.0\bin
-```
-
-And you should start your git-bash to build the project. (It works for me in vscode bash terminal)
-
-## Steps
-
-- [01-HelloOs](01-HelloOs)
-  - Enable UART to print trivial greetings
-- [02-ContextSwitch](02-ContextSwitch)
-  - Basic switch from OS to user task
-- [03-MultiTasking](03-MultiTasking)
-  - Two user tasks are interatively switching
-- [04-TimerInterrupt](04-TimerInterrupt)
-  - Enable SysTick for future scheduler implementation
-- [05-Preemptive](05-Preemptive)
-  - Basic preemptive scheduling
-- [06-Spinlock](06-Spinlock)
-  - Lock implementation for protec critical sections
-- [07-ExternInterrupt](07-ExternInterrupt)
-  - Learing PLIC & external interruption
-
-## Building and Verification
-
-- Changes the current working directory to the specified one and then
-
-```
-make
-make qemu
+```sh
+cd 01-HelloOs  # or any other stage
+make           # build os.elf
+make qemu      # run in QEMU
+# Exit QEMU: Ctrl-A then X
 ```
 
-## Licensing
+## Requirements
 
-`mini-riscv-os` is freely redistributable under the two-clause BSD License.
-Use of this source code is governed by a BSD-style license that can be found
-in the `LICENSE` file.
+- `riscv64-unknown-elf-gcc` (works for both 32-bit and 64-bit targets)
+- QEMU with RISC-V support (`qemu-system-riscv32` / `qemu-system-riscv64`)
 
-## Reference
+## Architecture
 
-- [Adventures in RISC-V](https://matrix89.github.io/writes/writes/experiments-in-riscv/)
-- [Xv6, a simple Unix-like teaching operating system](https://pdos.csail.mit.edu/6.828/2020/xv6.html)
-- [Basics of programming a UART](https://www.activexperts.com/serial-port-component/tutorials/uart/)
+- **32-bit stages (01-05)**: rv32ima, ILP32 ABI, `qemu-system-riscv32`
+- **64-bit stages (06-09)**: rv64ima, LP64 ABI, `qemu-system-riscv64`
+
+## License
+
+BSD 2-clause - see [LICENSE](LICENSE)
